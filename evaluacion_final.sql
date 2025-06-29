@@ -70,13 +70,41 @@ GROUP BY c.customer_id, c.first_name, c.last_name;
 
 -- 11. Encuentra la cantidad total de películas alquiladas por categoría y muestra el nombre de la categoría junto con el recuento de alquileres.
 
+SELECT
+	c.name AS categoría,
+    COUNT(r.rental_id) AS total_alquileres
+FROM rental r
+JOIN inventory i USING (inventory_id)
+JOIN film f USING (film_id)
+JOIN film_category fc USING (film_id)
+JOIN category c USING (category_id)
+GROUP BY c.name;
+
 -- 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la clasificación junto con el promedio de duración.
+
+SELECT rating, AVG(length) AS promedio_duración
+FROM film
+GROUP BY rating;
 
 -- 13. Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
 
+SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo
+FROM actor a
+JOIN film_actor fa USING (actor_id)
+JOIN film f USING (film_id)
+WHERE f.title = "Indian Love";
+
 -- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.
 
+SELECT title
+FROM film
+WHERE description LIKE '%dog%' OR description LIKE '%cat%';
+
 -- 15. Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
+
+SELECT title
+FROM film
+WHERE release_year BETWEEN 2005 AND 2010;
 
 -- 16. Encuentra el título de todas las películas que son de la misma categoría que "Family".
 
