@@ -2,6 +2,8 @@
 
 Este repositorio contiene la solución a la evaluación final del Módulo 2 del programa de formación en análisis de datos. El ejercicio pone a prueba los conocimientos adquiridos sobre **SQL** aplicados a la base de datos de ejemplo **Sakila**.
 
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+
 ## 🗂️ Contenido del repositorio
 
 - `evaluacion_final.sql`: Archivo principal con las soluciones a los ejercicios propuestos.
