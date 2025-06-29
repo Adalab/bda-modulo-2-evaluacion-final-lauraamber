@@ -107,8 +107,24 @@ FROM film
 WHERE release_year BETWEEN 2005 AND 2010;
 
 -- 16. Encuentra el título de todas las películas que son de la misma categoría que "Family".
+-- NOTA: No hay ninguna película titulada Family, las más similares son 'Cyclone Family', 'Dogma Family' y 'Family Sweet';
+-- haremos el ejercicio con esta última frente al resto por comenzar por la palabra indicada en el enunciado.
+
+SELECT f.title
+FROM film f
+JOIN film_category fc USING (film_id)
+JOIN category c USING (category_id)
+WHERE c.name LIKE (SELECT c.name
+					FROM category c
+					JOIN film_category fc USING (category_id)
+					JOIN film f USING (film_id)
+					WHERE f.title LIKE '%Family Sweet%');
 
 -- 17. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.
+
+SELECT title
+FROM film f
+WHERE rating LIKE 'R' AND length > 120;
 
 -- BONUS
 
