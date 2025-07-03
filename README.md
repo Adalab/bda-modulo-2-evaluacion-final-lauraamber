@@ -21,3 +21,14 @@ El objetivo de esta evaluación es comprobar la comprensión de conceptos fundam
 - Joins entre tablas relacionadas
 
 Todo ello usando como base de datos **Sakila**, una simulación de una tienda de alquiler de películas.
+
+## 📌 Estructura de la solución
+
+- El archivo SQL está organizado en secciones numeradas que corresponden a cada ejercicio.  
+- Cada consulta está comentada para explicar qué se busca obtener.  
+- Las consultas combinan cláusulas básicas y avanzadas para demostrar dominio del lenguaje.
+
+## 💡 Recursos útiles
+
+- Documentación oficial de [MySQL](https://dev.mysql.com/doc/)  
+- Información sobre la base de datos Sakila: [Sakila Schema](https://dev.mysql.com/doc/sakila/en/sakila-structure.html)  
