@@ -7,7 +7,7 @@ USE sakila;
 
 -- 1. Selecciona todos los nombres de las películas sin que aparezcan duplicados.
 
-SELECT distinct title
+SELECT DISTINCT title -- Pedimos que se muestren solo las filas únicas
 FROM film;
 
 -- 2. Muestra los nombres de todas las películas que tengan una clasificación de "PG-13".
@@ -20,13 +20,13 @@ WHERE rating = "PG-13"; -- En este filtro avanzado podríamos usar LIKE porque d
 
 SELECT title, description
 FROM film
-WHERE description LIKE '%amazing%';
+WHERE description LIKE '%amazing%'; -- Usamos LIKE y no REGEXP porque es más rápido en búsquedas simples, lo que lo hace más idóneo para casos donde una cadena contiene algo
 
 -- 4. Encuentra el título de todas las películas que tengan una duración mayor a 120 minutos.
 
 SELECT title
 FROM film
-WHERE length > '120';
+WHERE length > '120'; -- Donde la longitud es mayor a
 
 -- 5. Recupera los nombres de todos los actores.
 
@@ -66,7 +66,7 @@ SELECT
     COUNT(r.rental_id) AS total_alquiladas
 FROM customer c
 INNER JOIN rental r USING (customer_id)
-GROUP BY c.customer_id, c.first_name, c.last_name;
+GROUP BY c.customer_id, c.first_name, c.last_name; -- Toda columna de SELECT que no está en una función agregada debe aparecer en el GROUP BY
 
 -- 11. Encuentra la cantidad total de películas alquiladas por categoría y muestra el nombre de la categoría junto con el recuento de alquileres.
 
@@ -82,13 +82,13 @@ GROUP BY c.name; -- Cuando combinamos una columna agregada con columnas normales
 
 -- 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la clasificación junto con el promedio de duración.
 
-SELECT rating, AVG(length) AS promedio_duración
+SELECT rating, AVG(length) AS promedio_duración -- Calculamos con AVG la media de los valores de la columna numérica length
 FROM film
 GROUP BY rating;
 
 -- 13. Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
 
-SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo
+SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo -- Concatenamos varios valores en una sola cadena de texto para renombrar la columna
 FROM actor a
 INNER JOIN film_actor fa USING (actor_id)
 INNER JOIN film f USING (film_id)
@@ -137,15 +137,15 @@ WHERE f.rating LIKE 'R' AND f.length > 120;
 SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo
 FROM actor a
 INNER JOIN film_actor fa USING (actor_id)
-GROUP BY a.actor_id, a.first_name, a.last_name
-HAVING COUNT(fa.film_id) > 10; 
+GROUP BY a.actor_id, a.first_name, a.last_name -- Agrupamos por actor, usando su actor_id y nombres para asegurarnos que cada grupo corresponde a un actor único. Esto es necesario porque usamos una función agregada (COUNT) y estamos seleccionando columnas no agregadas.
+HAVING COUNT(fa.film_id) > 10; -- Indicamos que solo queremos actores que hayan actuado en más de 10 películas (fa.film_id cuenta las películas relacionadas).
 
 -- 19. ¿Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor?
 -- Respuesta: Negativo, todos han participado en alguna película.
 
 SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo
 FROM actor a
-LEFT JOIN film_actor fa USING (actor_id)
+LEFT JOIN film_actor fa USING (actor_id) -- Usamos un LEFT JOIN porque queremos incluir todos los actores, incluso aquellos que no tienen registros relacionados en la tabla film_actor
 WHERE fa.film_id IS NULL;
 
 -- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y muestra el nombre de la categoría junto con el promedio de duración.
@@ -163,7 +163,7 @@ SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo, COUNT(f.film_i
 FROM actor a
 INNER JOIN film_actor fa USING (actor_id)
 INNER JOIN film f USING (film_id)
-GROUP BY a.first_name, a.last_name
+GROUP BY a.first_name, a.last_name -- Agrupamos los datos por actor para contar cuántas películas tiene cada uno y con HAVING filtramos aquellos con más de 5 participaciones.
 HAVING COUNT(f.film_id) > 5;
 
 -- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días.
@@ -186,7 +186,7 @@ SELECT DISTINCT CONCAT( a.first_name, ' ', a.last_name) AS nombre_completo
 FROM actor a
 INNER JOIN film_actor fa USING (actor_id)
 INNER JOIN film f USING (film_id)
-WHERE a.actor_id NOT IN (
+WHERE a.actor_id NOT IN ( 
 	SELECT CONCAT(a.first_name, ' ', a.last_name) AS nombre_completo
 	FROM actor a
 	INNER JOIN film_actor fa USING (actor_id)
@@ -212,11 +212,11 @@ SELECT DISTINCT
 	CONCAT(a2.first_name, ' ', a2.last_name) AS actor_2,
     COUNT(*) AS peliculas_juntos
 FROM film_actor fa1
-INNER JOIN film_actor fa2 -- Usamos un SELF JOIN (la misma tabla dos veces, con alias diferentes) al necesitar relacionar actores y películas consigo mismos
+INNER JOIN film_actor fa2 -- Usamos un SELF JOIN porque queremos comparar actores entre sí dentro de la misma tabla de relaciones
 	ON fa1.film_id = fa2.film_id 
-    AND fa1.actor_id < fa2.actor_id  -- evita duplicados tipo A-B y B-A
+    AND fa1.actor_id < fa2.actor_id  -- Evitamos que se repitan las parejas en orden invertido, manteniendo solo una combinación única por pareja
 INNER JOIN actor a1 ON fa1.actor_id = a1.actor_id
 INNER JOIN actor a2 ON fa2.actor_id = a2.actor_id
 GROUP BY actor_1, actor_2
-HAVING COUNT(*) >= 1;
+HAVING COUNT(*) >= 1; -- Filtramos para mostrar solo parejas que hayan hecho al menos una película juntos (en realidad este filtro es redundante porque cualquier grupo tiene al menos un elemento, pero podría usarse para otro umbral mayor)
 
